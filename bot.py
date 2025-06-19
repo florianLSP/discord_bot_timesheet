@@ -28,6 +28,25 @@ async def ping(ctx):
     await ctx.send("pong")
 
 
+@bot.command()
+async def start(ctx):
+    await ctx.send("dis moi sur quoi tu veux bosser")
+
+    # Fonction qui prend en compte que le message de l'utilisateur qui a
+    # exécuté la commande dans le salon.
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+
+    try:
+        # timer de 10 secondes pour récupérer la catégorie
+        msg = await bot.wait_for("message", timeout=10.0, check=check)
+        category = msg.content
+    except asyncio.TimeoutError:
+        category = "Session de travail"
+
+    await ctx.send(f"Catégorie définie: {category}")
+
+
 @bot.event
 async def on_voice_state_update(member, before, after):
     print(
