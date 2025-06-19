@@ -44,7 +44,9 @@ async def on_voice_state_update(member, before, after):
                     f"Yooo!! {member.display_name} est la pour bosser !"
                 )
                 await asyncio.sleep(1)
-                await text_channel.send(f"Dis moi tu veux bosser sur quoi ?")
+                await text_channel.send(
+                    f"Fais moi signe quand tu es prêt à commencer ! (!start)"
+                )
 
 
 bot.run(token)
