@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
+import asyncio
 
 
 load_dotenv()
@@ -39,7 +40,11 @@ async def on_voice_state_update(member, before, after):
             # Récupère le salon de l'utilisateur Discord dans le serveur à partir de son ID
             text_channel = member.guild.get_channel(channel_id)
             if text_channel:
-                await text_channel.send(f"{member.display_name} est arrivé dans Work !")
+                await text_channel.send(
+                    f"Yooo!! {member.display_name} est la pour bosser !"
+                )
+                await asyncio.sleep(1)
+                await text_channel.send(f"Dis moi tu veux bosser sur quoi ?")
 
 
 bot.run(token)
