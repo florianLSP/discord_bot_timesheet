@@ -16,6 +16,10 @@ intents.message_content = True  # utile plus tard
 intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
+bot_commands = [
+    {"name": "start", "description": "Permet de démarrer une session de travail"},
+    {"name": "ping", "description": "Le bot répondra pong"},
+]
 
 
 @bot.event
@@ -26,6 +30,19 @@ async def on_ready():
 @bot.command()
 async def ping(ctx):
     await ctx.send("pong")
+
+
+@bot.command()
+async def helpme(ctx):
+    header = "**Liste des commandes disponibles :**\n"
+
+    command_list = ""
+    for bot_command in bot_commands:
+        command_list += f"`!{bot_command['name']}`: *{bot_command['description']}*\n"
+
+    message = header + command_list
+
+    await ctx.send(message)
 
 
 @bot.command()
