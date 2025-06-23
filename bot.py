@@ -60,11 +60,7 @@ async def on_voice_state_update(member, before, after):
             text_channel = member.guild.get_channel(channel_id)
             if text_channel:
                 await text_channel.send(
-                    f"Yooo!! {member.mention} est la pour bosser !"
-                )
-                await asyncio.sleep(1)
-                await text_channel.send(
-                    f"Fais moi signe quand tu es prêt à commencer ! (!start)"
+                    f"Yooo!! {member.mention} est la pour bosser ! \n Fais moi signe quand tu es prêt à commencer ! (`!start` ou `!help` pour afficher les commandes)"
                 )
 
 
