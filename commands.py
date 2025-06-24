@@ -1,9 +1,12 @@
-import asyncio
+import asyncio, time
+from datetime import timedelta
 
 bot_commands = [
     {"name": "start", "description": "Permet de démarrer une session de travail"},
     {"name": "ping", "description": "Le bot répondra pong"},
 ]
+
+user_sessions = {}
 
 
 def register_commands(bot):
@@ -28,6 +31,7 @@ def register_commands(bot):
     @bot.command()
     async def start(ctx):
         await ctx.send("dis moi sur quoi tu veux bosser")
+        user_id = ctx.author.id
 
         # Fonction qui prend en compte que le message de l'utilisateur qui a
         # exécuté la commande dans le salon.
@@ -42,3 +46,24 @@ def register_commands(bot):
             category = "Session de travail"
 
         await ctx.send(f"Catégorie définie: {category}")
+        global start_timer
+        start_timer = time.time()
+        user_sessions[user_id] = start_timer
+        await ctx.send(
+            f"{ctx.author.mention} → Timer démarré ! Tape `!stop` quand tu as fini."
+        )
+
+    @bot.command()
+    async def stop(ctx):
+        user_id = ctx.author.id
+
+        if user_id not in user_sessions:
+            await ctx.send("Aucune session en cours pour toi.")
+            return
+
+        global end_timer
+        end_timer = int(time.time())
+        timer = end_timer - user_sessions[user_id]
+
+        formatted = str(timedelta(seconds=int(timer)))
+        await ctx.send(f"{ctx.author.mention} → Temps écoulé : **{formatted}** ⏱️")
