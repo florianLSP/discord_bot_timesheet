@@ -56,7 +56,7 @@ async def start(ctx):
 
     try:
         # timer de 10 secondes pour récupérer la catégorie
-        msg = await bot.wait_for("message", timeout=10.0, check=check)
+        msg = await bot.wait_for("message", timeout=15.0, check=check)
         category = msg.content
     except asyncio.TimeoutError:
         category = "Session de travail"
