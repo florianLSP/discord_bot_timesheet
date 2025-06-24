@@ -19,7 +19,7 @@ intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 
-register_commands(bot)
+register_commands(bot, commands)
 
 
 register_events(bot, channel_id)

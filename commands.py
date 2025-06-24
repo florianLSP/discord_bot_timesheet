@@ -9,7 +9,7 @@ bot_commands = [
 user_sessions = {}
 
 
-def register_commands(bot):
+def register_commands(bot, commands):
     @bot.command()
     async def ping(ctx):
         await ctx.send("pong")
@@ -67,3 +67,11 @@ def register_commands(bot):
 
         formatted = str(timedelta(seconds=int(timer)))
         await ctx.send(f"{ctx.author.mention} → Temps écoulé : **{formatted}** ⏱️")
+
+    @bot.command()
+    @commands.has_permissions(manage_messages=True)
+    async def clear(ctx, amount: int=10):
+        await ctx.channel.purge(limit=amount+1)
+        confirm = await ctx.send(f"🧹 {amount} messages supprimés.")
+        await asyncio.sleep(3)
+        await confirm.delete()
