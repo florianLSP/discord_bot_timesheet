@@ -14,6 +14,7 @@ class UserSession:
     start_time: float
     end_time: Optional[float] = None
     active: bool = False
+    category: str = "Session de travail"
 
 
 user_sessions = {}
@@ -54,7 +55,8 @@ def register_commands(bot, commands):
 
         await ctx.send(f"Catégorie définie: {category}")
 
-        user_sessions[user_id] = UserSession(start_time=time.time(), active=True)
+        user_sessions[user_id] = UserSession(start_time=time.time(), active=True, category=category)
+        print(user_sessions[user_id])
 
         await ctx.send(
             f"{ctx.author.mention} → Timer démarré ! Tape `!stop` quand tu as fini."
