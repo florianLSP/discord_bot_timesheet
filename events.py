@@ -16,5 +16,5 @@ def register_events(bot, channel_id):
                 text_channel = member.guild.get_channel(channel_id)
                 if text_channel:
                     await text_channel.send(
-                        f"Yooo!! {member.mention} est la pour bosser ! \n Fais moi signe quand tu es prêt à commencer ! (`!start` ou `!help` pour afficher les commandes)"
+                        f"Yooo!! {member.mention} est la pour bosser ! \n Fais moi signe quand tu es prêt à commencer ! (`!start` ou `!helpme` pour afficher les commandes)"
                     )
