@@ -55,7 +55,9 @@ def register_commands(bot, commands):
 
         await ctx.send(f"Catégorie définie: {category}")
 
-        user_sessions[user_id] = UserSession(start_time=time.time(), active=True, category=category)
+        user_sessions[user_id] = UserSession(
+            start_time=time.time(), active=True, category=category
+        )
         print(user_sessions[user_id])
 
         await ctx.send(
