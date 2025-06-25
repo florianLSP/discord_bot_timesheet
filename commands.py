@@ -1,10 +1,20 @@
 import asyncio, time
 from datetime import timedelta
+from dataclasses import dataclass
+from typing import Optional
 
 bot_commands = [
     {"name": "start", "description": "Permet de démarrer une session de travail"},
     {"name": "ping", "description": "Le bot répondra pong"},
 ]
+
+
+@dataclass
+class UserSession:
+    start_time: float
+    end_time: Optional[float] = None
+    active: bool = False
+
 
 user_sessions = {}
 
@@ -46,9 +56,9 @@ def register_commands(bot, commands):
             category = "Session de travail"
 
         await ctx.send(f"Catégorie définie: {category}")
-        global start_timer
-        start_timer = time.time()
-        user_sessions[user_id] = start_timer
+
+        user_sessions[user_id] = UserSession(start_time=time.time(), active=True)
+
         await ctx.send(
             f"{ctx.author.mention} → Timer démarré ! Tape `!stop` quand tu as fini."
         )
@@ -61,12 +71,18 @@ def register_commands(bot, commands):
             await ctx.send("Aucune session en cours pour toi.")
             return
 
-        global end_timer
-        end_timer = int(time.time())
-        timer = end_timer - user_sessions[user_id]
+        user_session = user_sessions[user_id]
+        user_session.end_time = time.time()
+        user_session.active = False
 
-        formatted = str(timedelta(seconds=int(timer)))
-        await ctx.send(f"{ctx.author.mention} → Temps écoulé : **{formatted}** ⏱️")
+        formatted_time = str(
+            timedelta(
+                seconds=int(
+                    user_sessions[user_id].end_time - user_sessions[user_id].start_time
+                )
+            )
+        )
+        await ctx.send(f"{ctx.author.mention} → Temps écoulé : **{formatted_time}** ⏱️")
 
     @bot.command()
     @commands.has_permissions(manage_messages=True)
