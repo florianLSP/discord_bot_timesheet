@@ -43,13 +43,10 @@ def register_commands(bot, commands):
         await ctx.send("dis moi sur quoi tu veux bosser")
         user_id = ctx.author.id
 
-        # Fonction qui prend en compte que le message de l'utilisateur qui a
-        # exécuté la commande dans le salon.
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
         try:
-            # timer de 10 secondes pour récupérer la catégorie
             msg = await bot.wait_for("message", timeout=15.0, check=check)
             category = msg.content
         except asyncio.TimeoutError:
