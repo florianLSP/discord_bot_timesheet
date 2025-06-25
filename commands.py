@@ -70,8 +70,8 @@ def register_commands(bot, commands):
 
     @bot.command()
     @commands.has_permissions(manage_messages=True)
-    async def clear(ctx, amount: int=10):
-        await ctx.channel.purge(limit=amount+1)
+    async def clear(ctx, amount: int = 10):
+        await ctx.channel.purge(limit=amount + 1)
         confirm = await ctx.send(f"🧹 {amount} messages supprimés.")
         await asyncio.sleep(3)
         await confirm.delete()
