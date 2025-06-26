@@ -2,7 +2,8 @@ import os
 from dotenv import load_dotenv
 import discord
 from discord.ext import commands
-from commands import register_commands
+from commands.main_commands import register_commands
+from commands.games import register_games
 from events import register_events
 
 
@@ -20,8 +21,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 
 register_commands(bot, commands)
-
-
+register_games(bot)
 register_events(bot, channel_id)
 
 
