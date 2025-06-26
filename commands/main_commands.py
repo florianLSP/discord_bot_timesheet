@@ -6,6 +6,7 @@ from numpy import random
 
 bot_commands = [
     {"name": "start", "description": "Permet de démarrer une session de travail"},
+    {"name": "game1", "description": "Jeu - Pierre Feuille Ciseau"},
     {"name": "ping", "description": "Le bot répondra pong"},
 ]
 
