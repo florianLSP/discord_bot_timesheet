@@ -25,6 +25,20 @@ class UserSession:
 user_sessions = {}
 
 
+log_state = {"count": 0}
+
+
+def print_logs(id_user, username, command, user_session=None):
+    log_state["count"] += 1
+    print("\n****************************************************************\n")
+    print(f"log n°{log_state['count']}")
+    print(f"id: {id_user}")
+    print(f"nom: {username}")
+    print(f"commande: {command}")
+    print(f"user_session: {user_session}")
+    print("\n****************************************************************\n")
+
+
 def register_commands(bot, commands):
     @bot.command()
     async def ping(ctx):
@@ -42,6 +56,11 @@ def register_commands(bot, commands):
 
         message = header + command_list
 
+        print_logs(
+            ctx.author.id,
+            ctx.author.name + " (@" + ctx.author.display_name + ")",
+            "!helpme",
+        )
         await ctx.send(message)
 
     @bot.command()
@@ -63,7 +82,13 @@ def register_commands(bot, commands):
         user_sessions[user_id] = UserSession(
             start_time=time.time(), active=True, category=category
         )
-        print(user_sessions[user_id])
+
+        print_logs(
+            ctx.author.id,
+            ctx.author.name + " (@" + ctx.author.display_name + ")",
+            "!start",
+            user_sessions[user_id],
+        )
 
         await ctx.send(
             f"{ctx.author.mention} → Timer démarré ! Tape `!stop` quand tu as fini."
@@ -90,6 +115,12 @@ def register_commands(bot, commands):
         )
         formatted = str(timedelta(seconds=int(total_time)))
 
+        print_logs(
+            ctx.author.id,
+            ctx.author.name + " (@" + ctx.author.display_name + ")",
+            "!stop",
+            user_sessions[user_id],
+        )
         await ctx.send(f"{ctx.author.mention} → Temps écoulé : **{formatted}**")
 
     @bot.command()
@@ -105,7 +136,13 @@ def register_commands(bot, commands):
             await ctx.send("Tu es déjà en pause.")
             return
 
-        user_session.break_time = time.time()
+
+        print_logs(
+            ctx.author.id,
+            ctx.author.name + " (@" + ctx.author.display_name + ")",
+            "!pause",
+            user_sessions[user_id],
+        )
         await ctx.send("Ok, pause activée. Reviens avec `!resume`.")
 
     @bot.command()
@@ -125,13 +162,21 @@ def register_commands(bot, commands):
         user_session.break_time += pause_duration
         user_session.pause_start = 0.0
 
-        await ctx.send(
-            f"On y retourne ! Pause de {int(pause_duration)} secondes ajoutée."
+        print_logs(
+            ctx.author.id,
+            ctx.author.name + " (@" + ctx.author.display_name + ")",
+            "!resume",
+            user_sessions[user_id],
         )
 
     @bot.command()
     @commands.has_permissions(manage_messages=True)
     async def clear(ctx, amount: int = 99):
+        print_logs(
+            ctx.author.id,
+            ctx.author.name + " (@" + ctx.author.display_name + ")",
+            "!clear",
+        )
         await ctx.channel.purge(limit=amount + 1)
         confirm = await ctx.send(f"🧹 {amount} messages supprimés.")
         await asyncio.sleep(3)
