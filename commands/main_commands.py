@@ -3,7 +3,6 @@ import time
 from datetime import timedelta
 from dataclasses import dataclass
 from typing import Optional
-from numpy import random
 
 bot_commands = [
     {"name": "start", "description": "Permet de démarrer une session de travail"},
