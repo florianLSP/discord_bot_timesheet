@@ -161,6 +161,7 @@ def register_commands(bot, commands):
         pause_duration = time.time() - float(user_session.pause_start)
         user_session.break_time += pause_duration
         user_session.pause_start = 0.0
+        formatted = str(timedelta(seconds=int(pause_duration)))
 
         print_logs(
             ctx.author.id,
@@ -168,6 +169,7 @@ def register_commands(bot, commands):
             "!resume",
             user_sessions[user_id],
         )
+        await ctx.send(f"On y retourne ! Pause de {formatted} secondes ajoutée.")
 
     @bot.command()
     @commands.has_permissions(manage_messages=True)
