@@ -135,6 +135,7 @@ def register_commands(bot, commands):
             await ctx.send("Tu es déjà en pause.")
             return
 
+        user_session.pause_start = time.time()
 
         print_logs(
             ctx.author.id,
