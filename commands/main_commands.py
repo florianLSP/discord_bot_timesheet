@@ -154,7 +154,7 @@ def register_commands(bot, commands):
             return
 
         user_session = user_sessions[user_id]
-        if not user_session.break_time:
+        if not user_session.pause_start:
             await ctx.send("Tu n'es pas en pause.")
             return
 
