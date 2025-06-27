@@ -16,9 +16,7 @@ def register_games(bot):
             choice = "Ok on jouera plus tard..."
 
         if choice == "o":
-            await ctx.send(
-                f"Début de la game :\n p = pierre\n f = feuille\n c = ciseau"
-            )
+            await ctx.send("Début de la game :\n p = pierre\n f = feuille\n c = ciseau")
             countdown = await ctx.send("Début de la partie dans ... 3")
             await asyncio.sleep(1)
             await countdown.edit(content="Début de la partie dans ... 2")
@@ -61,4 +59,4 @@ def register_games(bot):
                     await ctx.send("🗿 \n Tu as perdu...")
 
         else:
-            await ctx.send(f"Ok on jouera plus tard...")
+            await ctx.send("Ok on jouera plus tard...")
