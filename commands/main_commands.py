@@ -1,3 +1,5 @@
+import os
+import json
 import asyncio
 import time
 from datetime import timedelta
@@ -9,6 +11,18 @@ bot_commands = [
     {"name": "game1", "description": "Jeu - Pierre Feuille Ciseau"},
     {"name": "ping", "description": "Le bot répondra pong"},
 ]
+
+json_session_model = {
+    "date": None,
+    "session": [
+        {
+            "categorie":"",
+            "duree":0,
+            "pause":0,
+            "description":"",
+        }
+    ]
+}
 
 
 @dataclass
@@ -36,6 +50,20 @@ def print_logs(id_user, username, command, user_session=None):
     print(f"commande: {command}")
     print(f"user_session: {user_session}")
     print("\n****************************************************************\n")
+
+
+def create_user_file(user_id, username):
+    filename = f"users/{username}_{user_id}.json"
+
+    if not os.path.exists("users"):
+        os.makedirs("users")
+
+    if not os.path.exists(filename):
+        with open(filename, "w") as f:
+            json.dump([json_session_model], f, indent=4)
+            print(f"Fichier créé pour {username}")
+    else:
+        print(f"Pas de création de fichier pour {username} car déjà existant.")
 
 
 def register_commands(bot, commands):
@@ -66,6 +94,8 @@ def register_commands(bot, commands):
     async def start(ctx):
         await ctx.send("dis moi sur quoi tu veux bosser")
         user_id = ctx.author.id
+
+        create_user_file(user_id, ctx.author.name)
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
