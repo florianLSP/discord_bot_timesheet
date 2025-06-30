@@ -6,7 +6,7 @@ def register_events(bot, channel_id):
     @bot.event
     async def on_voice_state_update(member, before, after):
         print(
-            f"******************\n Channel précédent: {before.channel} \n Channel suivant: {after.channel} \n******************"
+            f"\n****************************************************************\n Utilisateur : {member.name}(@{member.display_name}) \n Channel précédent: {before.channel} \n Channel suivant: {after.channel} \n****************************************************************\n"
         )
 
         # Vérification que l'user n'est pas parti et qu'il a bien changé de channel.
