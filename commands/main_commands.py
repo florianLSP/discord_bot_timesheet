@@ -12,19 +12,6 @@ bot_commands = [
     {"name": "ping", "description": "Le bot répondra pong"},
 ]
 
-json_session_model = {
-    "date": None,
-    "session": [
-        {
-            "categorie":"",
-            "duree":0,
-            "pause":0,
-            "description":"",
-        }
-    ]
-}
-
-
 @dataclass
 class UserSession:
     start_time: float
@@ -60,7 +47,7 @@ def create_user_file(user_id, username):
 
     if not os.path.exists(filename):
         with open(filename, "w") as f:
-            json.dump([json_session_model], f, indent=4)
+            json.dump([], f, indent=4)
             print(f"Fichier créé pour {username}")
     else:
         print(f"Pas de création de fichier pour {username} car déjà existant.")
