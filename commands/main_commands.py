@@ -2,7 +2,8 @@ import os
 import json
 import asyncio
 import time
-from datetime import timedelta
+import uuid
+from datetime import timedelta, datetime
 from dataclasses import dataclass
 from typing import Optional
 
@@ -11,6 +12,7 @@ bot_commands = [
     {"name": "game1", "description": "Jeu - Pierre Feuille Ciseau"},
     {"name": "ping", "description": "Le bot répondra pong"},
 ]
+
 
 @dataclass
 class UserSession:
@@ -79,35 +81,63 @@ def register_commands(bot, commands):
 
     @bot.command()
     async def start(ctx):
-        await ctx.send("dis moi sur quoi tu veux bosser")
         user_id = ctx.author.id
+        username = ctx.author.name
+        filename = f"users/{username}_{user_id}.json"
+        is_existing_date = False
 
-        create_user_file(user_id, ctx.author.name)
+        create_user_file(user_id, username)
+
+        await ctx.send("Dis-moi sur quoi tu veux bosser (tu as 15 secondes) 🧠")
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
         try:
             msg = await bot.wait_for("message", timeout=15.0, check=check)
-            category = msg.content
+            category = msg.content.strip()
         except asyncio.TimeoutError:
             category = "Session de travail"
 
-        await ctx.send(f"Catégorie définie: {category}")
+        await ctx.send(f"📌 Catégorie définie : `{category}`")
 
-        user_sessions[user_id] = UserSession(
-            start_time=time.time(), active=True, category=category
-        )
+        with open(filename, "r") as f:
+            user_data = json.load(f)
+
+        new_session_id = str(uuid.uuid4())
+        today = datetime.now().strftime("%d/%m/%Y")
+
+        new_session = {
+            "id_session": new_session_id,
+            "category": category,
+            "description": "test description",
+            "start_time": time.time(),
+            "end_time": None,
+            "pause_start": None,
+            "break_time": 0,
+        }
+
+        if len(user_data) == 0:
+            user_data.append({"date": today, "sessions": [new_session]})
+
+        for entry in user_data:
+            if entry["date"] == today:
+                entry["sessions"].append(new_session)
+                is_existing_date = True
+                break
+
+        if not is_existing_date:
+            user_data.append({"date": today, "sessions": [new_session]})
+
+        with open(filename, "w") as f:
+            json.dump(user_data, f, indent=4)
 
         print_logs(
-            ctx.author.id,
-            ctx.author.name + " (@" + ctx.author.display_name + ")",
-            "!start",
-            user_sessions[user_id],
+            user_id, f"{username} (@{ctx.author.display_name})", "!start", new_session
         )
 
         await ctx.send(
-            f"{ctx.author.mention} → Timer démarré ! Tape `!stop` quand tu as fini."
+            f"{ctx.author.mention} → ✅ Timer démarré ! Tape `!stop` quand tu as fini."
         )
 
     @bot.command()
