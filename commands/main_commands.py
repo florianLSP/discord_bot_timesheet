@@ -117,9 +117,6 @@ def register_commands(bot, commands):
             "break_time": 0,
         }
 
-        if len(user_data) == 0:
-            user_data.append({"date": today, "sessions": [new_session]})
-
         for entry in user_data:
             if entry["date"] == today:
                 entry["sessions"].append(new_session)
