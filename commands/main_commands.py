@@ -140,31 +140,54 @@ def register_commands(bot, commands):
     @bot.command()
     async def stop(ctx):
         user_id = ctx.author.id
+        username = ctx.author.name
+        filename = f"users/{username}_{user_id}.json"
+        today = datetime.now().strftime("%d/%m/%Y")
 
-        if user_id not in user_sessions:
-            await ctx.send("Aucune session en cours pour toi.")
+        if not os.path.exists(filename):
+            await ctx.send("Aucune session trouvée pour toi.")
             return
 
-        user_session = user_sessions[user_id]
-        user_session.end_time = time.time()
+        with open(filename, "r") as f:
+            user_data = json.load(f)
 
-        if user_session.pause_start:
-            user_session.break_time += user_session.end_time - user_session.pause_start
+        session_found = False
+        for entry in user_data:
+            if entry["date"] == today:
+                for session in reversed(entry["sessions"]):
+                    if session["end_time"] is None:
+                        end_time = time.time()
+                        session["end_time"] = end_time
 
-        user_session.active = False
+                        if session["pause_start"]:
+                            session["break_time"] += end_time - session["pause_start"]
+                            session["pause_start"] = None
 
-        total_time = (
-            user_session.end_time - user_session.start_time - user_session.break_time
-        )
-        formatted = str(timedelta(seconds=int(total_time)))
+                        total_time = (
+                            session["end_time"]
+                            - session["start_time"]
+                            - session["break_time"]
+                        )
+                        formatted = str(timedelta(seconds=int(total_time)))
 
-        print_logs(
-            ctx.author.id,
-            ctx.author.name + " (@" + ctx.author.display_name + ")",
-            "!stop",
-            user_sessions[user_id],
-        )
-        await ctx.send(f"{ctx.author.mention} → Temps écoulé : **{formatted}**")
+                        with open(filename, "w") as f:
+                            json.dump(user_data, f, indent=4)
+
+                        print_logs(
+                            user_id,
+                            f"{username} (@{ctx.author.display_name})",
+                            "!stop",
+                            session,
+                        )
+                        await ctx.send(
+                            f"{ctx.author.mention} → Temps écoulé : **{formatted}** ⏱️"
+                        )
+                        session_found = True
+                        break
+                break
+        if not session_found:
+            await ctx.send("Aucune session en cours trouvée pour aujourd'hui")
+
 
     @bot.command()
     async def pause(ctx):
